@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca CEP</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        .button {
+            height: 35px;
+            width: 10%;
+            background-color: rgb(66, 197, 66);
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .text {
+            color: green;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .input {
+            width: 25%;
+            height: 40px;
+            text-align: right;
+            font-size: 24px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+        }
+        .texto {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .display {
+            width: 25%;
+            height: 40px;
+            text-align: left;
+            font-size: 18px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f3f3f3;
+        }
+    </style>
+</head>
+
+<script>
+function buscaCEP() {
+    var valor = document.getElementById("input").value;
+    var cep = valor.replace(/\D/g, '');
+
+    if (cep != "") {
+        var validacep = /^[0-9]{8}$/;
+
+        if(validacep.test(cep)) {
+            var script = document.createElement('script');
+            script.src = 'https://viacep.com.br/ws/' + cep + '/json/?callback=meu_callback';
+            document.body.appendChild(script);
+        } else {
+            alert("Formato de CEP inválido.");
+            limpaCEP();
+        }
+    } else {
+        alert("Formato de CEP inválido.");
+        limpaCEP();			
+    }
+}
+
+function meu_callback(conteudo) {
+    if (!("erro" in conteudo)) {
+        document.getElementById('rua').innerHTML = conteudo.logradouro;
+        document.getElementById('bairro').innerHTML = conteudo.bairro;
+        document.getElementById('cidade').innerHTML = conteudo.localidade;
+        document.getElementById('estado').innerHTML = conteudo.uf;
+    } else {
+        alert("CEP não encontrado.");
+        limpaCEP();
+    }
+}
+
+function limpaCEP() {
+    document.getElementById('rua').innerHTML = '';
+    document.getElementById('bairro').innerHTML = '';
+    document.getElementById('cidade').innerHTML = '';
+    document.getElementById('estado').innerHTML = '';
+}
+</script>
+
+<body>
+    <h1 class="text">Cep Etec</h1>
+    <label for="input" class="texto">Digite seu CEP: </label>
+    <input id="input" class="input" type="text">
+
+    <button onclick="buscaCEP()" class="button">Buscar</button>
+    <div class="texto">Bairro</div>
+    <div class="display" id="bairro"></div>
+
+    <div class="texto">Rua</div>
+    <div class="display" id="rua"></div>
+
+    <div class="texto">Cidade</div>
+    <div class="display" id="cidade"></div>
+
+    <div class="texto">Estado</div>
+    <div class="display" id="estado"></div>
+</body>
+
+</html>
